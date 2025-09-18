@@ -1,4 +1,5 @@
 
+
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@
 //   bool _showCalculator = false;
 //   String expression = "";
 
+//   // ✅ Default Categories
 //   final Map<String, List<Map<String, dynamic>>> categories = {
 //     "Income": [
 //       {"icon": Icons.work, "label": "Salary", "amount": 500},
@@ -39,6 +41,7 @@
 //     ],
 //   };
 
+//   // ✅ Add Custom Category Dialog
 //   void _addCustomCategory() {
 //     final _customController = TextEditingController();
 //     showDialog(
@@ -63,8 +66,11 @@
 //                     "label": _customController.text,
 //                     "amount": 0,
 //                   });
+//                   _selectedCategory = _customController.text;
+//                   _noteController.text = _customController.text;
 //                 });
 //                 Navigator.pop(ctx);
+//                 Navigator.pop(context); // close bottom sheet as well
 //               }
 //             },
 //             child: const Text("Add"),
@@ -74,6 +80,56 @@
 //     );
 //   }
 
+//   // ✅ Show Category Selector in Bottom Sheet
+//   void _showCategorySelector() {
+//     final currentCategories = categories[_type]!;
+//     showModalBottomSheet(
+//       context: context,
+//       shape: const RoundedRectangleBorder(
+//         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//       ),
+//       builder: (ctx) => Padding(
+//         padding: const EdgeInsets.all(16),
+//         child: Wrap(
+//           spacing: 12,
+//           runSpacing: 12,
+//           children: [
+//             ...currentCategories.map((cat) {
+//               return ChoiceChip(
+//                 avatar: Icon(cat["icon"], color: Colors.green),
+//                 label: Text(cat["label"]),
+//                 selected: _selectedCategory == cat["label"],
+//                 selectedColor: Colors.blue,
+//                 backgroundColor: Colors.grey.shade300,
+//                 labelStyle: TextStyle(
+//                   color: _selectedCategory == cat["label"]
+//                       ? Colors.white
+//                       : Colors.black,
+//                 ),
+//                 onSelected: (selected) {
+//                   setState(() {
+//                     _selectedCategory = cat["label"];
+//                     _amountController.text = cat["amount"].toString();
+//                     _noteController.text = cat["label"];
+//                   });
+//                   Navigator.pop(context); // close bottom sheet
+//                 },
+//               );
+//             }).toList(),
+//             ActionChip(
+//               avatar: const Icon(Icons.add, color: Colors.black),
+//               label: const Text("Custom"),
+//               backgroundColor: Colors.white,
+//               labelStyle: const TextStyle(color: Colors.black),
+//               onPressed: _addCustomCategory,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   // ✅ Calculator Logic
 //   void _onPressed(String value) {
 //     setState(() {
 //       if (value == "C") {
@@ -98,10 +154,12 @@
 //     });
 //   }
 
+//   // ✅ Save Transaction
 //   void _saveTransaction() {
 //     if (_amountController.text.isNotEmpty && _noteController.text.isNotEmpty) {
 //       final txn = TransactionModel(
 //         type: _type,
+//         category: _selectedCategory ?? "Uncategorized", // ✅ FIXED
 //         amount: double.tryParse(_amountController.text) ?? 0,
 //         note: _noteController.text,
 //         date: DateFormat.yMMMd().format(DateTime.now()),
@@ -114,8 +172,6 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final currentCategories = categories[_type]!;
-
 //     return Scaffold(
 //       body: SafeArea(
 //         child: Column(
@@ -190,47 +246,25 @@
 
 //                     const SizedBox(height: 16),
 
-//                     // ✅ Category Chips
-//                     Wrap(
-//                       spacing: 12,
-//                       runSpacing: 12,
-//                       children: [
-//                         ...currentCategories.map((cat) {
-//                           return ChoiceChip(
-//                             avatar: Icon(cat["icon"], color: Colors.green),
-//                             label: Text(cat["label"]),
-//                             selected: _selectedCategory == cat["label"],
-//                             selectedColor: Colors.blue,
-//                             backgroundColor: Colors.grey.shade300,
-//                             labelStyle: TextStyle(
-//                               color: _selectedCategory == cat["label"]
-//                                   ? Colors.white
-//                                   : Colors.black,
-//                             ),
-//                             onSelected: (selected) {
-//                               setState(() {
-//                                 _selectedCategory = cat["label"];
-//                                 _amountController.text =
-//                                     cat["amount"].toString();
-//                                 _noteController.text = cat["label"];
-//                               });
-//                             },
-//                           );
-//                         }).toList(),
-
-//                         ActionChip(
-//                           avatar: const Icon(Icons.add, color: Colors.black),
-//                           label: const Text("Custom"),
-//                           backgroundColor: Colors.white,
-//                           labelStyle: const TextStyle(color: Colors.black),
-//                           onPressed: _addCustomCategory,
+//                     // ✅ Category Field
+//                     TextField(
+//                       readOnly: true,
+//                       onTap: _showCategorySelector,
+//                       decoration: InputDecoration(
+//                         labelText: "Select Category",
+//                         prefixIcon: const Icon(Icons.category),
+//                         hintText: _selectedCategory ?? "Tap to choose",
+//                         filled: true,
+//                         fillColor: Colors.grey.shade100,
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
 //                         ),
-//                       ],
+//                       ),
 //                     ),
 
 //                     const SizedBox(height: 16),
 
-//                     // ✅ Stylish Amount Field
+//                     // ✅ Amount Field
 //                     TextField(
 //                       controller: _amountController,
 //                       readOnly: true,
@@ -256,7 +290,7 @@
 
 //                     const SizedBox(height: 12),
 
-//                     // ✅ Stylish Note Field
+//                     // ✅ Note Field
 //                     TextField(
 //                       controller: _noteController,
 //                       decoration: InputDecoration(
@@ -309,9 +343,10 @@
 //                                     : (btnText == "="
 //                                         ? Colors.green
 //                                         : Colors.grey[200]),
-//                                 foregroundColor: btnText == "C" || btnText == "="
-//                                     ? Colors.white
-//                                     : Colors.black,
+//                                 foregroundColor:
+//                                     btnText == "C" || btnText == "="
+//                                         ? Colors.white
+//                                         : Colors.black,
 //                                 shape: RoundedRectangleBorder(
 //                                   borderRadius: BorderRadius.circular(10),
 //                                 ),
@@ -341,6 +376,7 @@
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -363,7 +399,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   bool _showCalculator = false;
   String expression = "";
 
-  // ✅ Default Categories
   final Map<String, List<Map<String, dynamic>>> categories = {
     "Income": [
       {"icon": Icons.work, "label": "Salary", "amount": 500},
@@ -382,7 +417,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     ],
   };
 
-  // ✅ Add Custom Category Dialog
   void _addCustomCategory() {
     final _customController = TextEditingController();
     showDialog(
@@ -411,7 +445,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   _noteController.text = _customController.text;
                 });
                 Navigator.pop(ctx);
-                Navigator.pop(context); // close bottom sheet as well
+                Navigator.pop(context);
               }
             },
             child: const Text("Add"),
@@ -421,7 +455,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ✅ Show Category Selector in Bottom Sheet
   void _showCategorySelector() {
     final currentCategories = categories[_type]!;
     showModalBottomSheet(
@@ -453,7 +486,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     _amountController.text = cat["amount"].toString();
                     _noteController.text = cat["label"];
                   });
-                  Navigator.pop(context); // close bottom sheet
+                  Navigator.pop(context);
                 },
               );
             }).toList(),
@@ -470,14 +503,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  // ✅ Calculator Logic
+  // ✅ UPDATED CALCULATOR LOGIC
   void _onPressed(String value) {
     setState(() {
       if (value == "C") {
         expression = "";
+        _amountController.clear();
       } else if (value == "⌫") {
         if (expression.isNotEmpty) {
           expression = expression.substring(0, expression.length - 1);
+          _amountController.text = expression;
         }
       } else if (value == "=") {
         try {
@@ -488,18 +523,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           _amountController.text = expression;
         } catch (e) {
           expression = "Error";
+          _amountController.text = "";
         }
       } else {
         expression += value;
+        _amountController.text = expression;
       }
     });
   }
 
-  // ✅ Save Transaction
   void _saveTransaction() {
     if (_amountController.text.isNotEmpty && _noteController.text.isNotEmpty) {
       final txn = TransactionModel(
         type: _type,
+        category: _selectedCategory ?? "Uncategorized",
         amount: double.tryParse(_amountController.text) ?? 0,
         note: _noteController.text,
         date: DateFormat.yMMMd().format(DateTime.now()),
@@ -516,7 +553,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ✅ Custom Top Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
@@ -535,14 +571,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ],
               ),
             ),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ✅ Transaction type buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: ["Income", "Expense", "Transfer"].map((t) {
@@ -571,6 +605,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                                   _type = t;
                                   _selectedCategory = null;
                                   _amountController.clear();
+                                  expression = "";
                                   _noteController.clear();
                                 });
                               },
@@ -583,10 +618,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         );
                       }).toList(),
                     ),
-
                     const SizedBox(height: 16),
-
-                    // ✅ Category TextField (instead of showing chips directly)
                     TextField(
                       readOnly: true,
                       onTap: _showCategorySelector,
@@ -601,10 +633,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
-                    // ✅ Amount Field
                     TextField(
                       controller: _amountController,
                       readOnly: true,
@@ -627,10 +656,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
-                    // ✅ Note Field
                     TextField(
                       controller: _noteController,
                       decoration: InputDecoration(
@@ -647,10 +673,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 1),
-
-                    // ✅ Inline Calculator
                     if (_showCalculator) ...[
                       Container(
                         padding: const EdgeInsets.all(8),
