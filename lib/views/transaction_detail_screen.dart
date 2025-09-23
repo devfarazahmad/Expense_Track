@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,14 +23,14 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
 
   final Map<String, List<Map<String, dynamic>>> categories = {
     "Income": [
-      {"icon": Icons.work, "label": "Salary", "amount": 500},
-      {"icon": Icons.card_giftcard, "label": "Lottery", "amount": 200},
-      {"icon": Icons.attach_money, "label": "Bonus", "amount": 100},
+      {"icon": Icons.work, "label": "Salary", },
+      {"icon": Icons.card_giftcard, "label": "Lottery",},
+      {"icon": Icons.attach_money, "label": "Bonus",},
     ],
     "Expense": [
-      {"icon": Icons.fastfood, "label": "Food", "amount": 50},
-      {"icon": Icons.home, "label": "Rent", "amount": 300},
-      {"icon": Icons.local_taxi, "label": "Transport", "amount": 20},
+      {"icon": Icons.fastfood, "label": "Food", },
+      {"icon": Icons.home, "label": "Rent", },
+      {"icon": Icons.local_taxi, "label": "Transport",},
     ],
   };
 
@@ -66,8 +64,11 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
 
   void _showCategorySelector() {
     final currentCategories = categories[_selectedType]!;
+    final theme = Theme.of(context);
+
     showModalBottomSheet(
       context: context,
+      backgroundColor: theme.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -79,15 +80,15 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
           children: [
             ...currentCategories.map((cat) {
               return ChoiceChip(
-                avatar: Icon(cat["icon"], color: Colors.blue),
+                avatar: Icon(cat["icon"], color: theme.colorScheme.primary),
                 label: Text(cat["label"]),
                 selected: _selectedCategory == cat["label"],
-                selectedColor: Colors.blue,
-                backgroundColor: Colors.grey.shade300,
+                selectedColor: theme.colorScheme.primary,
+                backgroundColor: theme.colorScheme.surfaceVariant,
                 labelStyle: TextStyle(
                   color: _selectedCategory == cat["label"]
                       ? Colors.white
-                      : Colors.black,
+                      : theme.colorScheme.onSurface,
                 ),
                 onSelected: (selected) {
                   setState(() {
@@ -122,7 +123,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     Navigator.pop(context);
   }
 
-  /// Common reusable container (for static fields like category/date)
+  /// Common reusable container
   Widget _buildBoxField({
     required String label,
     required String value,
@@ -131,6 +132,8 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     bool isHint = false,
     bool showArrow = false,
   }) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
@@ -139,13 +142,13 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFDEE1E6)),
+            border: Border.all(color: theme.dividerColor),
           ),
           child: Row(
             children: [
-              Icon(icon, color: Colors.black),
+              Icon(icon, color: theme.iconTheme.color),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -153,21 +156,25 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   children: [
                     Text(label,
                         style: TextStyle(
-                            fontSize: 12, color: Colors.grey.shade700)),
+                            fontSize: 12,
+                            color: theme.textTheme.bodySmall?.color)),
                     const SizedBox(height: 6),
                     Text(
                       value,
                       style: TextStyle(
                         fontSize: 16,
-                        color: isHint ? Colors.grey.shade600 : Colors.black,
-                        fontWeight: isHint ? FontWeight.normal : FontWeight.w600,
+                        color: isHint
+                            ? theme.hintColor
+                            : theme.textTheme.bodyLarge?.color,
+                        fontWeight:
+                            isHint ? FontWeight.normal : FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
               if (showArrow)
-                const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                Icon(Icons.arrow_drop_down, color: theme.iconTheme.color),
             ],
           ),
         ),
@@ -175,25 +182,27 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     );
   }
 
-  /// Editable container with TextField (for Amount & Notes)
+  /// Editable container with TextField
   Widget _buildEditableBoxField({
     required String label,
     required TextEditingController controller,
     required IconData icon,
     bool isNumber = false,
   }) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFFDEE1E6)),
+          border: Border.all(color: theme.dividerColor),
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.black),
+            Icon(icon, color: theme.iconTheme.color),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -201,21 +210,23 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                 children: [
                   Text(label,
                       style: TextStyle(
-                          fontSize: 12, color: Colors.grey.shade700)),
+                          fontSize: 12,
+                          color: theme.textTheme.bodySmall?.color)),
                   const SizedBox(height: 6),
                   TextField(
                     controller: controller,
                     keyboardType:
                         isNumber ? TextInputType.number : TextInputType.text,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
                       hintText: "Enter value",
+                      hintStyle: TextStyle(color: theme.hintColor),
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black),
+                        color: theme.textTheme.bodyLarge?.color),
                   ),
                 ],
               ),
@@ -226,14 +237,70 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     );
   }
 
+  /// Dropdown for Expense/Income
+  Widget _buildExpenseDropdownField() {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: "Type",
+          filled: true,
+          fillColor: theme.cardColor,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+          prefixIcon: Icon(Icons.category, color: theme.iconTheme.color),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: _selectedType,
+            isExpanded: true,
+            items: ["Expense", "Income"].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color:
+                        value == "Expense" ? Colors.red : theme.colorScheme.primary,
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedType = newValue!;
+                _selectedCategory = null;
+              });
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("Transaction Details")),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(color: Color(0xFFDEE1E6), height: 1),
+        title: const Text(
+          "Transaction Details",
+          style: TextStyle(fontSize: 18),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(color: theme.dividerColor, height: 1),
         ),
       ),
       body: SingleChildScrollView(
@@ -241,8 +308,6 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
         child: Column(
           children: [
             _buildExpenseDropdownField(),
-
-            // Category (with arrow & selector)
             _buildBoxField(
               label: "Category",
               value: _selectedCategory ?? "Select category",
@@ -251,8 +316,6 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
               onTap: _showCategorySelector,
               showArrow: true,
             ),
-
-            // Date (picker, no arrow)
             _buildBoxField(
               label: "Date",
               value: DateFormat("yyyy-MM-dd").format(_selectedDate),
@@ -269,24 +332,18 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                 }
               },
             ),
-
-            // Amount (direct editable)
             _buildEditableBoxField(
               label: "Amount",
               controller: _amountController,
               icon: Icons.attach_money,
               isNumber: true,
             ),
-
-            // Notes (direct editable)
             _buildEditableBoxField(
               label: "Notes",
               controller: _noteController,
               icon: Icons.note,
             ),
-
             const SizedBox(height: 20),
-
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFA46BF5),
@@ -303,13 +360,11 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
               ),
             ),
-
             const SizedBox(height: 12),
-
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Color(0xFFFF5F5B), width: 2),
-                foregroundColor: Color(0xFFFF5F5B),
+                foregroundColor: const Color(0xFFFF5F5B),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -331,54 +386,6 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  /// Type dropdown with color change
-  Widget _buildExpenseDropdownField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: "Type",
-          filled: true,
-          fillColor: Colors.white,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Color(0xFFDEE1E6)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Color(0xFFDEE1E6)),
-          ),
-          prefixIcon: const Icon(Icons.category, color: Colors.black),
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: _selectedType,
-            isExpanded: true,
-            items: ["Expense", "Income"].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: value == "Expense" ? Colors.red : Colors.blue,
-                  ),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedType = newValue!;
-                _selectedCategory = null;
-              });
-            },
-          ),
         ),
       ),
     );

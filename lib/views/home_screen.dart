@@ -1,193 +1,3 @@
-
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
-// import 'package:track_expense/views/transaction_detail_screen.dart';
-// import 'add_transaction_screen.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final vm = Provider.of<TransactionViewModel>(context);
-
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       appBar: AppBar(
-//         backgroundColor: Colors.white, // ✅ White background
-//         elevation: 0, // ✅ Flat look
-//         title: const Center(
-//           child: Text(
-//             "Track Expenses",
-//             style: TextStyle(
-//               fontSize: 20,
-//               fontWeight: FontWeight.bold,
-//               color: Colors.black, // ✅ Text black for contrast
-//             ),
-//           ),
-//         ),
-//         bottom: const PreferredSize(
-//           preferredSize: Size.fromHeight(1),
-//           child: Divider(color: Color(0xFFDEE1E6), height: 1),
-//         ),
-//         iconTheme: const IconThemeData(color: Colors.black), // ✅ Icons black
-//       ),
-//       body: Column(
-//         children: [
-//           // ✅ Summary Section
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               children: [
-//                 _summaryCard("Income", vm.totalIncome, Colors.blue, Icons.arrow_upward),
-//                 _summaryCard("Expense", vm.totalExpense, Colors.red, Icons.arrow_downward_rounded),
-//                 _summaryCard("Balance", vm.totalBalance, Colors.green, Icons.account_balance_wallet),
-//               ],
-//             ),
-//           ),
-
-//           // ✅ Transactions List (inside one container with divider)
-//           Expanded(
-//             child: vm.transactions.isEmpty
-//                 ? const Center(child: Text("No transactions found"))
-//                 : Container(
-//                     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//                     decoration: BoxDecoration(
-//                       color: Colors.white,
-//                       border: Border.all(color: Colors.grey.shade300),
-//                       borderRadius: BorderRadius.circular(8),
-//                     ),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const Padding(
-//                           padding: EdgeInsets.all(12.0),
-//                           child: Text(
-//                             "Recent Transactions",
-//                             style: TextStyle(
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                         ),
-//                         const Divider(height: 1, color: Color(0xFFF3F4F6)),
-
-//                         // ✅ Transaction List
-//                         Expanded(
-//                           child: ListView.separated(
-//                             itemCount: vm.transactions.length,
-//                             separatorBuilder: (context, index) =>
-//                                 const Divider(height: 1, color: Color(0xFFF3F4F6)),
-//                             itemBuilder: (context, index) {
-//                               // take reversed list → latest first
-//                               final txn = vm.transactions.reversed.toList()[index];
-
-//                               return ListTile(
-//                                 onTap: () {
-//                                   Navigator.push(
-//                                     context,
-//                                     MaterialPageRoute(
-//                                       builder: (_) =>
-//                                           TransactionDetailsScreen(transaction: txn),
-//                                     ),
-//                                   );
-//                                 },
-//                                 leading: CircleAvatar(
-//                                   backgroundColor: txn.type == "Income"
-//                                       ? const Color.fromARGB(255, 232, 245, 255)
-//                                       : const Color.fromARGB(255, 255, 237, 239),
-//                                   child: Text(
-//                                     txn.type.substring(0, 1),
-//                                     style: TextStyle(
-//                                       color: txn.type == "Income" ? Colors.blue : Colors.red,
-//                                       fontWeight: FontWeight.bold,
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 title: Text("${txn.type} - ${txn.category}"),
-//                                 subtitle: Text("${txn.date} | ${txn.note}"),
-//                                 trailing: Text(
-//                                   "\$${txn.amount.toStringAsFixed(2)}",
-//                                   style: TextStyle(
-//                                     color: txn.type == "Income" ? Colors.blue : Colors.red,
-//                                     fontWeight: FontWeight.bold,
-//                                   ),
-//                                 ),
-//                               );
-//                             },
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//           ),
-//         ],
-//       ),
-
-//       // ✅ Add Transaction Button
-//       floatingActionButton: FloatingActionButton(
-//         backgroundColor: Colors.blue,
-//         onPressed: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
-//           );
-//         },
-//         child: const Icon(Icons.add, color: Colors.white),
-//       ),
-//     );
-//   }
-
-//   // ✅ Summary Card Widget
-//   Widget _summaryCard(String title, double value, Color color, IconData icon) {
-//     return Container(
-//       width: 114,
-//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         border: Border.all(color: Colors.grey.shade400),
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Row(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               Container(
-//                 padding: const EdgeInsets.all(0.5),
-//                 decoration: BoxDecoration(
-//                   shape: BoxShape.circle,
-//                   border: Border.all(color: color, width: 2),
-//                 ),
-//                 child: Icon(icon, color: color, size: 16),
-//               ),
-//               const SizedBox(width: 8),
-//               Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-//             ],
-//           ),
-//           const SizedBox(height: 6),
-//           Text(
-//             "\$${value.toStringAsFixed(2)}",
-//             style: TextStyle(
-//                 color: color, fontSize: 12, fontWeight: FontWeight.bold),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
@@ -205,64 +15,78 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TransactionViewModel>(context);
+    final theme = Theme.of(context);
+
+  
+    final transactions = vm.transactions.reversed.toList();
+
+    
+    final bool isDark = theme.brightness == Brightness.dark;
+
+    final incomeColor = isDark ? Color(0xFFA46BF5) : Color(0xFF0073D1);
+    final expenseColor = isDark ? Color(0xFFCA5359) : Color(0xFFCA5359); 
+    final balanceColor = isDark ? Color(0xFF00D0C7) : Color(0xFF39A75A);
+
+    final incomeBg = isDark
+        ? const Color(0xFFA46BF5).withValues(alpha: 0.1) 
+        : const Color(0xFF0073D1).withValues(alpha: 0.1);
+    final expenseBg = const Color(0xFFCA5359).withValues(alpha: 0.1); 
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
         title: const Center(
           child: Text(
             "Track Expenses",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
             ),
           ),
         ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(color: Color(0xFFDEE1E6), height: 1),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(
+            color: theme.dividerColor,
+            height: 1,
+          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [
-          // ✅ Summary Section
+          
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                   child: _summaryCard(
-                      "Income", vm.totalIncome, Colors.blue, Icons.arrow_upward),
+                      "Income", vm.totalIncome, incomeColor, Icons.arrow_upward, theme),
                 ),
                 Expanded(
-                  child: _summaryCard("Expense", vm.totalExpense, Colors.red,
-                      Icons.arrow_downward_rounded),
+                  child: _summaryCard("Expense", vm.totalExpense, expenseColor,
+                      Icons.arrow_downward_rounded, theme),
                 ),
                 Expanded(
-                  child: _summaryCard("Balance", vm.totalBalance, Colors.green,
-                      Icons.account_balance_wallet),
+                  child: _summaryCard("Balance", vm.totalBalance, balanceColor,
+                      Icons.account_balance_wallet, theme),
                 ),
               ],
             ),
           ),
 
-          // ✅ Transactions List (inside one container with shadow + radius)
+          
           Expanded(
-            child: vm.transactions.isEmpty
+            child: transactions.isEmpty
                 ? const Center(child: Text("No transactions found"))
                 : Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12), // ✅ rounded
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.15),
+                          color: Colors.grey.withValues(alpha: 0.1),
                           blurRadius: 6,
                           spreadRadius: 1,
                           offset: const Offset(2, 3),
@@ -277,35 +101,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             "Recent Transactions",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        const Divider(
+                        Divider(
                           height: 1,
-                          // color: Color(0xFFF3F4F6),
-                           color: Colors.white,
-
-                          indent: 12, // ✅ divider not touching start
-                          endIndent: 12, // ✅ divider not touching end
+                          color: theme.dividerColor,
+                          indent: 12,
+                          endIndent: 12,
                         ),
-
-                        // ✅ Transaction List
                         Expanded(
                           child: ListView.separated(
-                            itemCount: vm.transactions.length,
-                            separatorBuilder: (context, index) =>
-                                const Divider(
-                                  height: 1,
-                                  color: Color(0xFFF3F4F6),
-                                  indent: 12, // ✅ same indent for items
-                                  endIndent: 12,
-                                ),
+                            itemCount: transactions.length,
+                            separatorBuilder: (context, index) => Divider(
+                              height: 1,
+                              color: theme.dividerColor,
+                              indent: 12,
+                              endIndent: 12,
+                            ),
                             itemBuilder: (context, index) {
-                              // take reversed list → latest first
-                              final txn =
-                                  vm.transactions.reversed.toList()[index];
+                              final txn = transactions[index];
+
+                              final isIncome = txn.type == "Income";
 
                               return ListTile(
                                 onTap: () {
@@ -318,15 +137,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 },
                                 leading: CircleAvatar(
-                                  backgroundColor: txn.type == "Income"
-                                      ? const Color.fromARGB(255, 232, 245, 255)
-                                      : const Color.fromARGB(255, 255, 237, 239),
+                                  backgroundColor: isIncome ? incomeBg : expenseBg,
                                   child: Text(
                                     txn.type.substring(0, 1),
                                     style: TextStyle(
-                                      color: txn.type == "Income"
-                                          ? Colors.blue
-                                          : Colors.red,
+                                      color: isIncome ? incomeColor : expenseColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -336,9 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 trailing: Text(
                                   "\$${txn.amount.toStringAsFixed(2)}",
                                   style: TextStyle(
-                                    color: txn.type == "Income"
-                                        ? Colors.blue
-                                        : Colors.red,
+                                    color: isIncome ? incomeColor : expenseColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -353,9 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      // ✅ Add Transaction Button
+    
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: isDark ? Color(0xFFA46BF5) : Color(0xFF0073D1),
         onPressed: () {
           Navigator.push(
             context,
@@ -367,17 +180,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ✅ Summary Card Widget
-  Widget _summaryCard(String title, double value, Color color, IconData icon) {
+  
+  Widget _summaryCard(
+      String title, double value, Color color, IconData icon, ThemeData theme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6), // space between cards
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 6,
             offset: const Offset(2, 3),
@@ -389,7 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
             children: [
               Container(
                 padding: const EdgeInsets.all(0.5),

@@ -1,38 +1,33 @@
-// lib/theme/app_theme.dart
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Call AppTheme.light() from MaterialApp.theme
   static ThemeData light() {
-    final base = ThemeData.light();
-
-    return base.copyWith(
-      // scaffold background (you wanted white)
+    return ThemeData(
+      brightness: Brightness.light,
+      primarySwatch: Colors.blue,
       scaffoldBackgroundColor: Colors.white,
-
-      // Use Inter for the whole app's TextTheme
-      textTheme: GoogleFonts.interTextTheme(base.textTheme).apply(
-        bodyColor: Colors.black,
-        displayColor: Colors.black,
-      ),
-
-      // AppBar theme example — keeps your appbar white + black text/icons
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        titleTextStyle: GoogleFonts.inter(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
       ),
+      
+      dividerColor: const Color(0xFF565D6D).withValues(alpha: 0.1)
+      //dividerColor: const Color(0xFF565D6D).withOpacity(10)
+    );
+  }
 
-      // You can also set primary/secondary colors as needed
-      colorScheme: base.colorScheme.copyWith(
-        primary: Colors.blue,
+  static ThemeData dark() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: Colors.blue,
+      scaffoldBackgroundColor: Colors.black,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
+      dividerColor: const Color(0xFFBDC1CA).withValues(alpha: 0.1),
     );
   }
 }

@@ -1,11 +1,11 @@
-
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
 // import 'package:track_expense/views/navigation_screen.dart';
-
+// import 'package:track_expense/theme/app_theme.dart'; 
 
 // void main() {
+//   WidgetsFlutterBinding.ensureInitialized();
 //   runApp(const MyApp());
 // }
 
@@ -23,21 +23,23 @@
 //       child: MaterialApp(
 //         debugShowCheckedModeBanner: false,
 //         title: 'Track Expenses',
-//         theme: ThemeData(
-//           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//           useMaterial3: true,
-//         ),
+//         theme: AppTheme.light(),
 //         home: const NavigationScreen(),
 //       ),
 //     );
 //   }
 // }
 
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
 import 'package:track_expense/views/navigation_screen.dart';
-import 'package:track_expense/theme/app_theme.dart'; // ✅ import theme
+import 'package:track_expense/theme/app_theme.dart';
+import 'package:track_expense/theme/theme_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,15 +56,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => TransactionViewModel()..fetchTransactions(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Track Expenses',
-        theme: AppTheme.light(), // ✅ use Inter + white background
-        home: const NavigationScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Track Expenses',
+            theme: themeProvider.themeData,
+            home: const NavigationScreen(),
+          );
+        },
       ),
     );
   }
 }
-
-
