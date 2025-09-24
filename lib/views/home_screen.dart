@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
@@ -13,24 +15,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    // fetch once after first frame so DB is read on app open
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TransactionViewModel>(context, listen: false).fetchTransactions();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TransactionViewModel>(context);
     final theme = Theme.of(context);
 
-  
-    final transactions = vm.transactions.reversed.toList();
+    // vm.transactions is now kept sorted newest-first by the ViewModel
+    final transactions = vm.transactions;
 
-    
     final bool isDark = theme.brightness == Brightness.dark;
 
-    final incomeColor = isDark ? Color(0xFFA46BF5) : Color(0xFF0073D1);
-    final expenseColor = isDark ? Color(0xFFCA5359) : Color(0xFFCA5359); 
-    final balanceColor = isDark ? Color(0xFF00D0C7) : Color(0xFF39A75A);
+    final incomeColor = isDark ? const Color(0xFFA46BF5) : const Color(0xFF0073D1);
+    final expenseColor = isDark ? const Color(0xFFCA5359) : const Color(0xFFCA5359);
+    final balanceColor = isDark ? const Color(0xFF00D0C7) : const Color(0xFF39A75A);
 
     final incomeBg = isDark
-        ? const Color(0xFFA46BF5).withValues(alpha: 0.1) 
+        ? const Color(0xFFA46BF5).withValues(alpha: 0.1)
         : const Color(0xFF0073D1).withValues(alpha: 0.1);
-    final expenseBg = const Color(0xFFCA5359).withValues(alpha: 0.1); 
+    final expenseBg = const Color(0xFFCA5359).withValues(alpha: 0.1);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -54,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -74,8 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-
-          
           Expanded(
             child: transactions.isEmpty
                 ? const Center(child: Text("No transactions found"))
@@ -123,18 +130,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             itemBuilder: (context, index) {
                               final txn = transactions[index];
-
                               final isIncome = txn.type == "Income";
 
                               return ListTile(
-                                onTap: () {
-                                  Navigator.push(
+                                onTap: () async {
+                                  // await details route — when returned, refresh list
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) =>
                                           TransactionDetailsScreen(transaction: txn),
                                     ),
                                   );
+                                  // refresh after coming back (covers update/delete)
+                                  await Provider.of<TransactionViewModel>(context,
+                                          listen: false)
+                                      .fetchTransactions();
                                 },
                                 leading: CircleAvatar(
                                   backgroundColor: isIncome ? incomeBg : expenseBg,
@@ -165,22 +176,21 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
-    
       floatingActionButton: FloatingActionButton(
-        backgroundColor: isDark ? Color(0xFFA46BF5) : Color(0xFF0073D1),
-        onPressed: () {
-          Navigator.push(
+        backgroundColor: isDark ? const Color(0xFFA46BF5) : const Color(0xFF0073D1),
+        onPressed: () async {
+          // await add screen, then refresh list so the new txn appears at top
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AddTransactionScreen()),
           );
+          await Provider.of<TransactionViewModel>(context, listen: false).fetchTransactions();
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  
   Widget _summaryCard(
       String title, double value, Color color, IconData icon, ThemeData theme) {
     return Container(
