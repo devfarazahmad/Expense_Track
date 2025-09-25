@@ -26,18 +26,49 @@ class SettingsScreen extends StatelessWidget {
                 Text(themeProvider.isDarkMode ? "Dark Mode" : "Light Mode"),
             value: themeProvider.isDarkMode,
             onChanged: (value) {
-              themeProvider.toggleTheme(); // ✅ This now also saves user choice
+              themeProvider.toggleTheme(); 
             },
           ),
-          const ListTile(
-            leading: Icon(Icons.backup),
-            title: Text("Backup"),
-            subtitle: Text("Export or Import Data"),
+         
+           const ListTile(
+            leading: Icon(Icons.subscriptions),
+            title: Text("Manage Subscription"),
+            subtitle: Text("Manage your subscription plan"),
           ),
-          const ListTile(
-            leading: Icon(Icons.info),
-            title: Text("About"),
-            subtitle: Text("Version 1.0.0"),
+           const ListTile(
+            leading: Icon(Icons.history),
+            title: Text("Rstore Purchases"),
+            subtitle: Text("Restore your previous purchases"),
+          ),
+           const ListTile(
+            leading: Icon(Icons.cached),
+            title: Text("Manage Subscription"),
+            subtitle: Text("Manage your subscription plan"),
+          ),
+            const ListTile(
+            leading: Icon(Icons.rate_review),
+            title: Text("Write a Review"),
+            subtitle: Text("Rate us on the App Store"),
+          ),
+            const ListTile(
+            leading: Icon(Icons.share),
+            title: Text("Share the App"),
+            subtitle: Text("Tell your friends about us"),
+          ),
+            const ListTile(
+            leading: Icon(Icons.support_agent),
+            title: Text("Support"),
+            subtitle: Text("Get help with your account"),
+          ),
+           const ListTile(
+            leading: Icon(Icons.privacy_tip),
+            title: Text("Privacy Policy"),
+            subtitle: Text("How we handle your data"),
+          ),
+           const ListTile(
+            leading: Icon(Icons.note),
+            title: Text("Terms of use"),
+            subtitle: Text("App use terms and conditions"),
           ),
         ],
       ),

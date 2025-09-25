@@ -1,5 +1,4 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
@@ -14,14 +13,13 @@ class AnalysisScreen extends StatefulWidget {
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  String selectedView = "All"; // Dropdown value: All, Income, Expense
+  String selectedView = "All";
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<TransactionViewModel>(context);
     final theme = Theme.of(context);
 
-    // Prepare chart data
     List<_ChartData> chartData;
     List filteredTransactions;
 
@@ -64,7 +62,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Chart + Dropdown section
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -81,7 +78,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               ),
               child: Column(
                 children: [
-                  // Dropdown inside graph section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -120,6 +116,15 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                           dataSource: chartData,
                           xValueMapper: (_ChartData data, _) => data.label,
                           yValueMapper: (_ChartData data, _) => data.value,
+                          // ✅ Force Income/Expense to always use same colors
+                          pointColorMapper: (_ChartData data, _) {
+                            if (data.label.toLowerCase() == "income") {
+                              return const Color(0xFF00D0C7); // teal
+                            } else if (data.label.toLowerCase() == "expense") {
+                              return const Color(0xFFA46BF5); // purple
+                            }
+                            return null; // fallback
+                          },
                           dataLabelSettings:
                               const DataLabelSettings(isVisible: true),
                         ),
@@ -140,8 +145,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: filteredTransactions.length,
                     itemBuilder: (context, index) {
-                      final txn = filteredTransactions[
-                          filteredTransactions.length - 1 - index];
+                      final txn = filteredTransactions[index];
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 6),
                         padding: const EdgeInsets.symmetric(

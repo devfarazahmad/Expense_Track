@@ -3,25 +3,24 @@ import 'package:track_expense/Database/app_database.dart';
 import 'package:track_expense/Model/transaction_model.dart';
 
 class TransactionRepository {
-  // Insert Transaction
+  
   Future<int> insertTransaction(TransactionModel txn) async {
     final db = await AppDatabase.instance.database;
 
-    // Remove id when inserting (let SQLite auto-increment it)
+    
     final data = txn.toMap();
     data.remove("id");
 
     return await db.insert("transactions", data);
   }
 
-  // Get All Transactions
+ 
   Future<List<TransactionModel>> getAllTransactions() async {
     final db = await AppDatabase.instance.database;
     final result = await db.query("transactions", orderBy: "date DESC");
     return result.map((e) => TransactionModel.fromMap(e)).toList();
   }
 
-  // Update Transaction
   Future<int> updateTransaction(TransactionModel txn) async {
     final db = await AppDatabase.instance.database;
     return await db.update(
@@ -32,7 +31,7 @@ class TransactionRepository {
     );
   }
 
-  // Delete Transaction
+ 
   Future<int> deleteTransaction(int id) async {
     final db = await AppDatabase.instance.database;
     return await db.delete(

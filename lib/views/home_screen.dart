@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
@@ -17,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // fetch once after first frame so DB is read on app open
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TransactionViewModel>(context, listen: false).fetchTransactions();
     });
@@ -28,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final vm = Provider.of<TransactionViewModel>(context);
     final theme = Theme.of(context);
 
-    // vm.transactions is now kept sorted newest-first by the ViewModel
+    
     final transactions = vm.transactions;
 
     final bool isDark = theme.brightness == Brightness.dark;
@@ -134,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               return ListTile(
                                 onTap: () async {
-                                  // await details route — when returned, refresh list
+                            
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -142,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           TransactionDetailsScreen(transaction: txn),
                                     ),
                                   );
-                                  // refresh after coming back (covers update/delete)
+                                  
                                   await Provider.of<TransactionViewModel>(context,
                                           listen: false)
                                       .fetchTransactions();
@@ -179,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: isDark ? const Color(0xFFA46BF5) : const Color(0xFF0073D1),
         onPressed: () async {
-          // await add screen, then refresh list so the new txn appears at top
+      
           await Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AddTransactionScreen()),

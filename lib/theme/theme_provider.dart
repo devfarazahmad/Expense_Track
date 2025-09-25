@@ -13,14 +13,14 @@ class ThemeProvider extends ChangeNotifier {
   bool get isDarkMode => _themeData == AppTheme.dark();
 
   ThemeProvider() {
-    _loadTheme(); // ✅ load saved theme at startup
+    _loadTheme(); 
   }
 
   void toggleTheme() async {
     _themeData = isDarkMode ? AppTheme.light() : AppTheme.dark();
     notifyListeners();
 
-    // ✅ Save user choice
+   
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDarkMode', _themeData == AppTheme.dark());
   }

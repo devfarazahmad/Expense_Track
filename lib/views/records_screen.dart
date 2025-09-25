@@ -1,6 +1,4 @@
 
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:track_expense/ViewModel/transaction_viewmodel.dart';
@@ -216,7 +214,7 @@ class RecordsScreen extends StatelessWidget {
         final dateText = dt != null ? DateFormat.yMMMd().format(dt) : txn.date;
         final isIncome = txn.type.toLowerCase() == 'income';
 
-        // ✅ Theme-based colors
+      
         final incomeColor = isDark ? Colors.purple : Colors.blue;
         final incomeBg = isDark
             ? Colors.purple.withOpacity(0.15)
@@ -229,7 +227,7 @@ class RecordsScreen extends StatelessWidget {
             color: isDark ? const Color(0xFF1E2128) : theme.cardColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: isDark
-                ? [] // no shadow & no border in dark mode
+                ? [] 
                 : [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.15),
@@ -368,7 +366,7 @@ class RecordsScreen extends StatelessWidget {
                   dt != null ? DateFormat.yMMMd().format(dt) : txn.date;
               final isIncome = txn.type.toLowerCase() == 'income';
 
-              // ✅ Theme-based colors
+            
               final incomeColor = isDark ? const Color(0xFFA46BF5) : Colors.blue;
               final incomeBg = isDark
                   ? const Color(0xFFA46BF5).withOpacity(0.1)

@@ -1,7 +1,7 @@
 
 class TransactionModel {
   final int? id;
-  final String type; // income, expense, transfer
+  final String type; 
   final String? category;
   final double amount;
   final String note;

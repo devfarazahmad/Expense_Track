@@ -33,7 +33,7 @@ class AppDatabase {
     ''');
   }
 
-  // ✅ Migration support
+  
   Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute("ALTER TABLE transactions ADD COLUMN category TEXT");
